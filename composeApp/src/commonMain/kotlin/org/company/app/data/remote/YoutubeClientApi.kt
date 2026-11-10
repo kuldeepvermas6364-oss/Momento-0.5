@@ -21,7 +21,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getVideoList(userRegion: String): Youtube {
-        val url = "videos?part=snippet,contentDetails,statistics,liveStreamingDetails,player,recordingDetails,id&chart=mostPopular&regionCode=${userRegion}&maxResults=50&key=${API_KEY}"
+        val url = "videos?part=snippet,contentDetails,statistics,liveStreamingDetails,player,recordingDetails&chart=mostPopular&regionCode=${userRegion}&maxResults=50&key=${API_KEY}"
         return client.get(url).body()
     }
 
@@ -35,7 +35,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getChannelDetails(channelId: String): Channel {
-        val url ="channels?part=contentDetails,brandingSettings,contentDetails,contentOwnerDetails,id,localizations,snippet,statistics,status,topicDetails&id=$channelId&key=${API_KEY}"
+        val url ="channels?part=contentDetails,brandingSettings,contentOwnerDetails,localizations,snippet,statistics,status,topicDetails&id=$channelId&key=${API_KEY}"
         return client.get(url).body()
     }
 
@@ -55,7 +55,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getPlaylists(channelId: String): Youtube {
-        val url ="playlists?part=snippet,contentDetails,localizations,player,status,id&channelId=${channelId}&maxResults=50&key=${API_KEY}"
+        val url ="playlists?part=snippet,contentDetails,localizations,player,status&channelId=${channelId}&maxResults=50&key=${API_KEY}"
         return client.get(url).body()
     }
 
@@ -70,7 +70,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getChannelVideos(playlistID: String): Youtube {
-        val url ="playlistItems?part=snippet,contentDetails,id,status&maxResults=50&playlistId=${playlistID}&key=$API_KEY"
+        val url ="playlistItems?part=snippet,contentDetails,status&maxResults=50&playlistId=${playlistID}&key=$API_KEY"
         return client.get(url).body()
     }
 
