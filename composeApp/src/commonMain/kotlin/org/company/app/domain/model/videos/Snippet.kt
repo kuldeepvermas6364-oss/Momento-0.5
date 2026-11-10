@@ -13,9 +13,9 @@ data class Snippet(
     @SerialName("channelTitle")
     val channelTitle: String? = null,
     @SerialName("defaultAudioLanguage")
-    val defaultAudioLanguage: String?,
+    val defaultAudioLanguage: String? = null,
     @SerialName("defaultLanguage")
-    val defaultLanguage: String?,
+    val defaultLanguage: String? = null,
     @SerialName("description")
     val description: String? = null,
     @SerialName("liveBroadcastContent")
@@ -25,7 +25,7 @@ data class Snippet(
     @SerialName("publishedAt")
     val publishedAt: String? = null,
     @SerialName("tags")
-    val tags: List<String>?,
+    val tags: List<String>? = null,
     @SerialName("thumbnails")
     val thumbnails: org.company.app.domain.model.videos.Thumbnails? = null,
     @SerialName("title")
