@@ -1,0 +1,8 @@
+{
+  "name": "Momento",
+  "description": "YouTube Clone built with Kotlin Multiplatform and Jetpack Compose",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,5 +1,5 @@
 rootProject.name = "Momento"
-include(":composeApp")
+include(":app")
 
 pluginManagement {
     repositories {

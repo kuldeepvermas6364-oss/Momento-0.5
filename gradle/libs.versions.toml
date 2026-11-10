@@ -39,6 +39,7 @@ gitlive = "2.1.0"
 credentials = "1.5.0"
 googleid = "1.1.1"
 haze = "1.6.10"
+secretsGradlePlugin = "2.0.1"
 
 
 [libraries]
@@ -115,3 +116,4 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 libres = { id = "io.github.skeptick.libres", version.ref = "libres" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
