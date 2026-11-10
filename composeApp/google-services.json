@@ -1,26 +1,45 @@
 {
   "project_info": {
-    "project_number": "77959177776",
-    "project_id": "clone-ef3ed",
-    "storage_bucket": "clone-ef3ed.appspot.com"
+    "project_number": "572912696071",
+    "firebase_url": "https://momento-816d1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "momento-816d1",
+    "storage_bucket": "momento-816d1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:77959177776:android:c9258fa1b5ff2e6c7c2ff5",
+        "mobilesdk_app_id": "1:572912696071:android:2f3a21e14f95f71bde63a2",
         "android_client_info": {
-          "package_name": "org.company.app.androidApp"
+          "package_name": "com.kuldeep.momento"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "572912696071-81dvdc41i949li09j12cf9i4qmgocmtq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kuldeep.momento",
+            "certificate_hash": "b1c55594005bbbb90c778cccadc3eb403f8791b7"
+          }
+        },
+        {
+          "client_id": "572912696071-diqisd9e0iibtsi90g1sknald0tk9p8i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDxw06oxH70OHadBg7rDI2wGaGSqNYlPmg"
+          "current_key": "AIzaSyBOH9jCHJWbQonZ58Oy6eZ1uXc3PJSomrQ"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572912696071-diqisd9e0iibtsi90g1sknald0tk9p8i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
