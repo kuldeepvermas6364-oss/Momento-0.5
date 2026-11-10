@@ -57,6 +57,34 @@ jobs:
           echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "Signing key alias detected successfully."
 
+      - name: Resolve Android signing alias
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/momento-release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD secret" && exit 1)
+          configured_alias="$(printf '%s' "$ANDROID_KEY_ALIAS" | tr -d '\r\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+          if [ -n "$configured_alias" ] && keytool -list -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$configured_alias" >/dev/null 2>&1; then
+            resolved_alias="$configured_alias"
+            echo "Configured Android signing alias verified."
+          else
+            echo "Configured alias did not match. Checking whether the keystore has exactly one private signing key..."
+            mapfile -t private_aliases < <(keytool -list -v -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" 2>/dev/null | awk '/Alias name: / { alias=$3 } /Entry type: PrivateKeyEntry/ { print alias }')
+            if [ "${#private_aliases[@]}" -ne 1 ]; then
+              echo "Could not safely resolve signing alias: expected exactly one private-key entry, found ${#private_aliases[@]}."
+              exit 1
+            fi
+            resolved_alias="${private_aliases[0]}"
+            echo "Resolved the only private-key alias in the keystore."
+          fi
+
+          test -n "$resolved_alias"
+          printf 'ANDROID_KEY_ALIAS=%s\n' "$resolved_alias" >> "$GITHUB_ENV"
+
       - name: Build signed Release APK
         env:
           ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/momento-release.jks
