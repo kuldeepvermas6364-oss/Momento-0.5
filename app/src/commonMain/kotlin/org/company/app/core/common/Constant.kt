@@ -8,6 +8,6 @@ object Constant {
     val API_KEY: String
         get() = customApiKey.trim().takeIf { it.isNotEmpty() } ?: DEFAULT_API_KEY
 
-    const val TIMEOUT = 10000L
+    const val TIMEOUT = 20000L
     const val VIDEO_URL = "https://www.youtube.com/watch?v="
 }

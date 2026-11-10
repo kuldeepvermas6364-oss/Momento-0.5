@@ -95,7 +95,6 @@ class MainViewModel(
 
 
     init {
-        getVideosList("US")
         fetchLayoutInformation()
         fetchCanFavourite()
     }

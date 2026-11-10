@@ -3,9 +3,9 @@ package org.company.app.data.remote
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
-import kotlinx.coroutines.withTimeout
 import org.company.app.core.common.Constant
 import org.company.app.domain.model.categories.VideoCategories
 import org.company.app.domain.model.channel.Channel
@@ -23,123 +23,192 @@ class YoutubeClientApi(
         return videoIds.shuffled().firstOrNull()
     }
 
-    private suspend inline fun <reified T> safeGet(endpoint: String): T {
-        val currentKey = Constant.API_KEY.trim()
-        val separator = if (endpoint.contains("?")) "&" else "?"
-        val baseUrl = Constant.BASE_URL.removeSuffix("/")
-        val path = endpoint.removePrefix("/")
-        
-        // 1. Try Primary Key (User Secret)
-        if (currentKey.isNotEmpty() && currentKey != Constant.DEFAULT_API_KEY) {
-            try {
-                val fullUrl = "$baseUrl/$path${separator}key=$currentKey"
-                println("YouTube API [Primary]: $fullUrl")
-                val response: HttpResponse = withTimeout(8000) {
-                    client.get(fullUrl)
-                }
-                if (response.status.isSuccess()) {
-                    val body: T = response.body()
-                    // Check if it's an empty "success" response (often happens with bad keys or limits)
-                    if (body is Youtube && body.items.isEmpty()) {
-                        println("YouTube API [Primary] returned 0 items. Falling back.")
-                    } else if (body is Search && body.items.isNullOrEmpty()) {
-                        println("YouTube API [Primary Search] returned 0 items. Falling back.")
-                    } else {
-                        return body
-                    }
-                } else {
-                    println("YouTube API [Primary] failed with status: ${response.status}")
-                }
-            } catch (e: Throwable) {
-                println("YouTube API [Primary] error: ${e.message}")
-            }
+    private suspend fun executeRequest(endpoint: String, key: String, params: Map<String, String>): HttpResponse {
+        return client.get(endpoint) {
+            parameter("key", key)
+            params.forEach { (k, v) -> parameter(k, v) }
         }
+    }
 
-        // 2. Try Default Fallback Key
-        val fallbackUrl = "$baseUrl/$path${separator}key=${Constant.DEFAULT_API_KEY}"
-        println("YouTube API [Fallback]: $fallbackUrl")
+    private suspend inline fun <reified T> safeGet(endpoint: String, params: Map<String, String> = emptyMap()): T {
+        val currentKey = Constant.API_KEY.trim()
+        
         return try {
-            val response: HttpResponse = withTimeout(10000) {
-                client.get(fallbackUrl)
+            val response = executeRequest(endpoint, currentKey, params)
+            if (response.status.isSuccess()) {
+                val body: T = response.body()
+                if ((body is Youtube && body.items.isEmpty()) || (body is Search && body.items.isNullOrEmpty())) {
+                    if (currentKey != Constant.DEFAULT_API_KEY) {
+                        println("YouTube API: Primary key returned empty. Trying fallback.")
+                        executeRequest(endpoint, Constant.DEFAULT_API_KEY, params).body()
+                    } else body
+                } else body
+            } else {
+                if (currentKey != Constant.DEFAULT_API_KEY) {
+                    println("YouTube API: Primary key failed (${response.status}). Trying fallback.")
+                    executeRequest(endpoint, Constant.DEFAULT_API_KEY, params).body()
+                } else {
+                    throw Exception("YouTube API Error: ${response.status}")
+                }
             }
-            response.body()
         } catch (e: Throwable) {
-            println("YouTube API [Fallback] fatal error: ${e.message}")
-            throw e
+            if (currentKey != Constant.DEFAULT_API_KEY) {
+                println("YouTube API: Primary request crashed. Trying fallback. Error: ${e.message}")
+                executeRequest(endpoint, Constant.DEFAULT_API_KEY, params).body()
+            } else {
+                throw e
+            }
         }
     }
 
     suspend fun getVideoList(userRegion: String): Youtube {
         val region = userRegion.ifBlank { "US" }
-        return safeGet("videos?part=snippet,contentDetails,statistics,liveStreamingDetails,player,recordingDetails&chart=mostPopular&regionCode=$region&maxResults=50")
+        return safeGet("videos", mapOf(
+            "part" to "snippet,contentDetails,statistics",
+            "chart" to "mostPopular",
+            "regionCode" to region,
+            "maxResults" to "50"
+        ))
     }
 
     suspend fun getRelevance(): Youtube {
-        return safeGet("videos?part=contentDetails%2Csnippet%2Cstatistics&id=${getRandomVideoIds()}")
+        return safeGet("videos", mapOf(
+            "part" to "snippet,contentDetails,statistics",
+            "id" to (getRandomVideoIds() ?: "")
+        ))
     }
 
     suspend fun getVideosUsingIds(ids: String): Youtube {
-        return safeGet("videos?id=$ids&part=snippet,contentDetails,statistics&maxResults=20")
+        return safeGet("videos", mapOf(
+            "id" to ids,
+            "part" to "snippet,contentDetails,statistics",
+            "maxResults" to "20"
+        ))
     }
 
     suspend fun getChannelDetails(channelId: String): Channel {
-        return safeGet("channels?part=contentDetails,brandingSettings,contentOwnerDetails,localizations,snippet,statistics,status,topicDetails&id=$channelId")
+        return safeGet("channels", mapOf(
+            "part" to "snippet,statistics,contentDetails,brandingSettings",
+            "id" to channelId
+        ))
     }
 
     suspend fun getChannelBranding(channelId: String): Channel {
-        return safeGet("channels?part=brandingSettings&id=$channelId")
+        return safeGet("channels", mapOf(
+            "part" to "brandingSettings",
+            "id" to channelId
+        ))
     }
 
     suspend fun getRelevanceVideos(): Youtube {
-        return safeGet("search?part=snippet&order=date&type=video&videoEmbeddable=true&maxResults=50&regionCode=us")
+        return safeGet("search", mapOf(
+            "part" to "snippet",
+            "order" to "date",
+            "type" to "video",
+            "videoEmbeddable" to "true",
+            "maxResults" to "50",
+            "regionCode" to "us"
+        ))
     }
 
     suspend fun getSearch(query: String, userRegion: String): Search {
         val region = userRegion.ifBlank { "US" }
-        return safeGet("search?part=snippet&q=$query&type=video&maxResults=50&regionCode=$region")
+        return safeGet("search", mapOf(
+            "part" to "snippet",
+            "q" to query,
+            "type" to "video",
+            "maxResults" to "50",
+            "regionCode" to region
+        ))
     }
 
     suspend fun getPlaylists(channelId: String): Youtube {
-        return safeGet("playlists?part=snippet,contentDetails,localizations,player,status&channelId=$channelId&maxResults=50")
+        return safeGet("playlists", mapOf(
+            "part" to "snippet,contentDetails",
+            "channelId" to channelId,
+            "maxResults" to "50"
+        ))
     }
 
     suspend fun getChannelSections(channelId: String): Youtube {
-        return safeGet("channelSections?part=snippet,contentDetails&channelId=$channelId")
+        return safeGet("channelSections", mapOf(
+            "part" to "snippet,contentDetails",
+            "channelId" to channelId
+        ))
     }
 
     suspend fun getChannelLiveStreams(channelID: String): Search {
-        return safeGet("search?part=snippet&eventType=live&type=video&channelId=$channelID&maxResults=50&regionCode=us")
+        return safeGet("search", mapOf(
+            "part" to "snippet",
+            "eventType" to "live",
+            "type" to "video",
+            "channelId" to channelID,
+            "maxResults" to "50",
+            "regionCode" to "us"
+        ))
     }
 
     suspend fun getChannelVideos(playlistID: String): Youtube {
-        return safeGet("playlistItems?part=snippet,contentDetails,status&maxResults=50&playlistId=$playlistID")
+        return safeGet("playlistItems", mapOf(
+            "part" to "snippet,contentDetails",
+            "maxResults" to "50",
+            "playlistId" to playlistID
+        ))
     }
 
     suspend fun getOwnChannelVideos(channelId: String): Search {
-        return safeGet("search?part=snippet&channelId=$channelId&type=video&maxResults=50")
+        return safeGet("search", mapOf(
+            "part" to "snippet",
+            "channelId" to channelId,
+            "type" to "video",
+            "maxResults" to "50"
+        ))
     }
 
     suspend fun getChannelCommunity(channelId: String): Youtube {
-        return safeGet("activities?part=snippet,contentDetails&channelId=$channelId&maxResults=50")
+        return safeGet("activities", mapOf(
+            "part" to "snippet,contentDetails",
+            "channelId" to channelId,
+            "maxResults" to "50"
+        ))
     }
 
     suspend fun getComments(videoId: String, order: String): Comments {
-        return safeGet("commentThreads?part=snippet,replies&videoId=$videoId&order=$order&maxResults=100")
+        return safeGet("commentThreads", mapOf(
+            "part" to "snippet,replies",
+            "videoId" to videoId,
+            "order" to order,
+            "maxResults" to "100"
+        ))
     }
 
     suspend fun getVideoCategories(): VideoCategories {
-        return safeGet("videoCategories?part=snippet&maxResults=50&regionCode=us")
+        return safeGet("videoCategories", mapOf(
+            "part" to "snippet",
+            "maxResults" to "50",
+            "regionCode" to "us"
+        ))
     }
 
     suspend fun getSingleVideoDetail(videoId: String): Youtube {
-        return safeGet("videos?part=snippet,contentDetails,statistics&id=$videoId")
+        return safeGet("videos", mapOf(
+            "part" to "snippet,contentDetails,statistics",
+            "id" to videoId
+        ))
     }
 
     suspend fun getMultipleVideos(videoId: String): Youtube {
-        return safeGet("videos?part=snippet,contentDetails,statistics&id=$videoId")
+        return safeGet("videos", mapOf(
+            "part" to "snippet,contentDetails,statistics",
+            "id" to videoId
+        ))
     }
 
     suspend fun getChannelSearch(channelID: String, query: String): Search {
-        return safeGet("search?part=snippet&channelId=$channelID&q=$query")
+        return safeGet("search", mapOf(
+            "part" to "snippet",
+            "channelId" to channelID,
+            "q" to query
+        ))
     }
 }
