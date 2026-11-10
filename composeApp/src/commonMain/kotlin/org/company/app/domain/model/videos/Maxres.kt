@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Maxres(
     @SerialName("height")
-    val height: Int,
+    val height: Int? = null,
     @SerialName("url")
-    val url: String,
+    val url: String? = null,
     @SerialName("width")
-    val width: Int
+    val width: Int? = null
 )
