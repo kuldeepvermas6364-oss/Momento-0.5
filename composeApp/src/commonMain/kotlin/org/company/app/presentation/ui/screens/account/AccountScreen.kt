@@ -1,6 +1,10 @@
 package org.company.app.presentation.ui.screens.account
 
 import org.company.app.presentation.ui.components.common.SignInNotice
+import org.company.app.data.repository.FirebaseAuthRepository
+import org.koin.compose.koinInject
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,6 +61,9 @@ import youtube_clone.composeapp.generated.resources.youtube_music
 object AccountScreen : Tab {
     @Composable
     override fun Content() {
+        val authRepository: FirebaseAuthRepository = koinInject()
+        val signedInUser by authRepository.authStateChanged.collectAsState(initial = authRepository.currentUser)
+        val scope = rememberCoroutineScope()
         var showSignIn by remember { mutableStateOf(false) }
         if (showSignIn) SignInNotice(onDismiss = { showSignIn = false })
         val navigator = LocalNavigator.current
@@ -90,40 +97,53 @@ object AccountScreen : Tab {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painterResource(Res.drawable.do_more_with_youtube),
-                    contentDescription = null,
-                    modifier = Modifier.size(165.dp)
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text(
-                    text = "Do more with YouTube",
-                    textAlign = TextAlign.Center,
-                    fontSize = MaterialTheme.typography.titleSmall.fontSize
-                )
-
-                Text(
-                    text = "Sign in now to upload, save, and comment on \n videos",
-                    textAlign = TextAlign.Center,
-                    fontSize = MaterialTheme.typography.bodySmall.fontSize
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextButton(
-                    onClick = { showSignIn = true },
-                    enabled = true,
-                    shape = RectangleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Blue,
-                        contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues(4.dp),
-                    modifier = Modifier.width(65.dp),
-                ) {
-                    Text(text = "SIGN IN")
+                if (signedInUser == null) {
+                    Image(
+                        painterResource(Res.drawable.do_more_with_youtube),
+                        contentDescription = null,
+                        modifier = Modifier.size(165.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Do more with Momento",
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize
+                    )
+                    Text(
+                        text = "Sign in to continue with your account",
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextButton(
+                        onClick = { showSignIn = true },
+                        enabled = true,
+                        shape = RectangleShape,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Blue,
+                            contentColor = Color.White
+                        ),
+                        contentPadding = PaddingValues(4.dp),
+                        modifier = Modifier.width(90.dp),
+                    ) {
+                        Text(text = "SIGN IN")
+                    }
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(72.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = signedInUser?.email ?: "Signed in",
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.titleSmall.fontSize
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    TextButton(onClick = {
+                        scope.launch { authRepository.signOut() }
+                    }) { Text("SIGN OUT") }
                 }
             }
 
