@@ -1,4 +1,4 @@
-rootProject.name = "Youtube-Clone"
+rootProject.name = "Momento"
 include(":composeApp")
 
 pluginManagement {
