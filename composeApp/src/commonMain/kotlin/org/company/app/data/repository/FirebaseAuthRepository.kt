@@ -17,12 +17,10 @@ class FirebaseAuthRepository(
 
     suspend fun createAccount(email: String, password: String) {
         auth.createUserWithEmailAndPassword(email.trim(), password)
-        ensureUserProfile()
     }
 
     suspend fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email.trim(), password)
-        ensureUserProfile()
     }
 
     suspend fun sendPasswordReset(email: String) {
