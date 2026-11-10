@@ -23,10 +23,23 @@ Do not put the API secret in GitHub, Android resources, BuildConfig, or chat.
 ## 2. Firebase
 The Worker validates each Firebase ID token using Firebase Authentication. Email/Password and Google sign-in users can use the same endpoint once authenticated.
 
-Before enabling metadata writes, add a `media/$uid` RTDB rule that allows only the matching authenticated user to read/write their own metadata. Do not use broad root-level authenticated writes.
+Before enabling metadata writes, add this rule inside the root `rules` object (merge it into your existing rules; do not replace unrelated rules):
+
+```json
+"media": {
+  "$uid": {
+    ".read": "auth != null && auth.uid === $uid",
+    ".write": "auth != null && auth.uid === $uid"
+  }
+}
+```
+
+Do not use broad root-level authenticated writes.
 
 ## 3. Android integration status
-The Worker is the secure signing component. The current upstream project is a YouTube client and does not yet contain a user-facing media picker/create-post flow. This Worker alone does not add an upload button. The Android uploader must call this endpoint with the current Firebase ID token, stream the selected file to Cloudinary, then save the returned `secure_url` and `public_id` in RTDB.
+The Android-side `CloudinaryUploadClient` has been added at `composeApp/src/androidMain/kotlin/org/company/app/data/upload/CloudinaryUploadClient.kt`. It requests a signature using the current Firebase ID token, streams the selected Android content URI to Cloudinary, and saves the returned `secureUrl`, `publicId`, resource type, format, byte count, and timestamp under `media/<uid>` in RTDB. The caller must pass the deployed Worker URL, the signed-in user's UID and fresh Firebase ID token, plus `image` or `video`.
+
+The repository is currently a YouTube browsing client and does not yet contain a user-facing media picker/create-post flow. The upload pipeline is now available to call, but a visible upload button and post/story/short creation flow still need to be connected to it.
 
 ## 4. Smoke test
 After deployment, send a POST request to the Worker with:
