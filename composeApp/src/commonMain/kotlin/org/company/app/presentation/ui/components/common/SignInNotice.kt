@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.company.app.data.repository.FirebaseAuthRepository
 import org.koin.compose.koinInject
+import org.company.app.presentation.ui.components.common.GoogleSignInButton
 
 @Composable
 fun SignInNotice(onDismiss: () -> Unit) {
@@ -40,7 +41,12 @@ fun SignInNotice(onDismiss: () -> Unit) {
         title = { Text(if (isCreateAccount) "Create Momento account" else "Sign in to Momento") },
         text = {
             Column {
-                Text("Use your email and password to continue.")
+                Text("Use your email and password, or continue with Google.")
+                Spacer(Modifier.height(8.dp))
+                GoogleSignInButton { result ->
+                    if (result == null) onDismiss() else message = result
+                }
+                Spacer(Modifier.height(8.dp))
                 Spacer(Modifier.height(12.dp))
                 OutlinedTextField(
                     value = email,
