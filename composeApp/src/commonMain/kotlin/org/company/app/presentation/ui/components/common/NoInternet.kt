@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import org.company.app.theme.LocalThemeIsDark
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import youtube_clone.composeapp.generated.resources.Res
-import youtube_clone.composeapp.generated.resources.no_internet
+import org.company.app.generated.resources.Res
+import org.company.app.generated.resources.no_internet
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -59,7 +59,6 @@ fun NoInternet() {
             Spacer(modifier = Modifier.height(14.dp))
             Button(
                 onClick = {
-
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(containerColor = colors.secondary)
