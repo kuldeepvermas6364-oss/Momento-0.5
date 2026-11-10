@@ -7,11 +7,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Statistics(
     @SerialName("commentCount")
-    val commentCount: String?,
+    val commentCount: String? = null,
     @SerialName("favoriteCount")
-    val favoriteCount: String,
+    val favoriteCount: String = "0",
     @SerialName("likeCount")
-    val likeCount: String?,
+    val likeCount: String? = null,
     @SerialName("viewCount")
-    val viewCount: String
+    val viewCount: String = "0"
 )
