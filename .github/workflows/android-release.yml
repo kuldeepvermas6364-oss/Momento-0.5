@@ -44,11 +44,23 @@ jobs:
           echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/momento-release.jks"
           test -s "$RUNNER_TEMP/momento-release.jks"
 
+      - name: Detect signing key alias from keystore
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/momento-release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD secret" && exit 1)
+          KEYSTORE_INFO="$(keytool -list -v -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" 2>/dev/null)"
+          KEY_ALIAS="$(printf '%s\\n' "$KEYSTORE_INFO" | awk -F': ' '/^Alias name: / {print $2; exit}')"
+          test -n "$KEY_ALIAS" || (echo "No key alias found in release keystore" && exit 1)
+          echo "ANDROID_KEY_ALIAS=$KEY_ALIAS" >> "$GITHUB_ENV"
+          echo "Signing key alias detected successfully."
+
       - name: Build signed Release APK
         env:
           ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/momento-release.jks
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           chmod +x ./gradlew
