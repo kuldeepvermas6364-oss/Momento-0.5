@@ -11,7 +11,7 @@
     <application
         android:name=".AndroidApp"
         android:icon="@drawable/youtube_color_icon"
-        android:label="Youtube Clone"
+        android:label="Momento"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity
