@@ -42,7 +42,7 @@ Do not use broad root-level authenticated writes.
 ## 3. Android integration status
 The Android-side `CloudinaryUploadClient` has been added at `composeApp/src/androidMain/kotlin/org/company/app/data/upload/CloudinaryUploadClient.kt`. It requests a signature using the current Firebase ID token, streams the selected Android content URI to Cloudinary, and saves the returned `secureUrl`, `publicId`, resource type, format, byte count, and timestamp under `media/<uid>` in RTDB. The caller must pass the deployed Worker URL, the signed-in user's UID and fresh Firebase ID token, plus `image` or `video`.
 
-The repository is currently a YouTube browsing client and does not yet contain a user-facing media picker/create-post flow. The upload pipeline is now available to call, but a visible upload button and post/story/short creation flow still need to be connected to it.
+The Android app now shows an Upload button above the bottom navigation. Signed-in users can choose a photo or video; the app obtains a Firebase ID token, requests a short-lived signature from the Worker, streams the file to Cloudinary, and saves its metadata under `media/<uid>` in RTDB. The upload status dialog reports success or a readable error. This is a private media upload/library step only: it does not yet publish a video to the public YouTube-style feed, create a Short, or attach the media to a post.
 
 ## 4. Smoke test
 After deployment, send a POST request to the Worker with:
