@@ -93,6 +93,7 @@ alert-kmp = { module = "io.github.khubaibkhan4:alert-kmp", version.ref = "alertK
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 android-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+gitlive-firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "gitlive" }
 gitlive-firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "gitlive" }
 gitlive-firebase-database = { group = "dev.gitlive", name = "firebase-database", version.ref = "gitlive" }
 gitlive-firebase-analytics = { group = "dev.gitlive", name = "firebase-analytics", version.ref = "gitlive" }
