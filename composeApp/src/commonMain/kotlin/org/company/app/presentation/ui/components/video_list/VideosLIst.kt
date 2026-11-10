@@ -1,6 +1,7 @@
 package org.company.app.presentation.ui.components.video_list
 
 import org.company.app.LocalBottomBarPadding
+import org.company.app.ads.AdsterraFeedAd
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -130,6 +133,46 @@ import youtube_clone.composeapp.generated.resources.youtube_logo_dark
 import youtube_clone.composeapp.generated.resources.youtube_logo_light
 import org.company.app.domain.model.videos.Item as VideoItem
 import org.company.app.presentation.ui.screens.detail.formatViewCount as FormateView
+
+
+@Composable
+private fun HomeVideosWithAds(
+    videos: List<VideoItem>,
+    columns: GridCells,
+    state: LazyGridState,
+    canFavourite: Boolean,
+    useGridCards: Boolean
+) {
+    val adSlots = videos.size / 5
+    val totalSlots = videos.size + adSlots
+
+    LazyVerticalGrid(
+        contentPadding = PaddingValues(bottom = LocalBottomBarPadding.current),
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        columns = columns
+    ) {
+        items(
+            count = totalSlots,
+            span = { slot ->
+                if (slot % 6 == 5) GridItemSpan(maxLineSpan) else GridItemSpan(1)
+            }
+        ) { slot ->
+            if (slot % 6 == 5) {
+                // Alternate the two supplied Adsterra units after each group of five posts.
+                AdsterraFeedAd(unitNumber = ((slot / 6) % 2) + 1)
+            } else {
+                val videoIndex = slot - (slot / 6)
+                val video = videos[videoIndex]
+                if (useGridCards) {
+                    VideoItemGridCard(video = video, canFavourite = canFavourite)
+                } else {
+                    VideoItemCard(video, canFavourite = canFavourite)
+                }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -522,69 +565,35 @@ fun VideosList(
                         var canFavourite = info.layoutMeta.favouriteEnabled
                         when (info.layoutMeta.layoutType) {
                             is LayoutType.List -> {
-                                LazyVerticalGrid(contentPadding = PaddingValues(bottom = LocalBottomBarPadding.current), 
-                                    modifier = Modifier.fillMaxSize(),
+                                HomeVideosWithAds(
+                                    videos = youtube.items ?: emptyList(),
+                                    columns = GridCells.Adaptive(300.dp),
                                     state = lazyListState,
-                                    columns = GridCells.Adaptive(300.dp)
-                                ) {
-                                    youtube.items?.let { items ->
-                                        itemsIndexed(items) { index,videos ->
-                                            if (index > 0 && index % 10 == 0){
-                                                VideoItemGridCard(videos, canFavourite = canFavourite)
-                                            }
-                                            VideoItemCard(videos, canFavourite = canFavourite)
-                                        }
-                                    }
-                                }
+                                    canFavourite = canFavourite,
+                                    useGridCards = false
+                                )
                             }
 
                             is LayoutType.Grid -> {
                                 val columns =
                                     (info.layoutMeta.layoutType as LayoutType.Grid).columns
-                                if (columns > 1) {
-                                    LazyVerticalGrid(contentPadding = PaddingValues(bottom = LocalBottomBarPadding.current), 
-                                        modifier = Modifier.fillMaxSize(),
-                                        state = lazyListState,
-                                        columns = GridCells.Fixed(columns)
-                                    ) {
-                                        itemsIndexed(youtube.items ?: listOf()) { index,video ->
-                                            if(index > 0 && index % 10 == 0){
-                                                VideoItemGridCard(video = video, canFavourite = canFavourite)
-                                            }
-                                            VideoItemGridCard(video, canFavourite = canFavourite)
-                                        }
-                                    }
-                                } else {
-                                    LazyVerticalGrid(contentPadding = PaddingValues(bottom = LocalBottomBarPadding.current), 
-                                        modifier = Modifier.fillMaxSize(),
-                                        state = lazyListState,
-                                        columns = GridCells.Adaptive(300.dp)
-                                    ) {
-                                        youtube.items?.let { items ->
-                                            itemsIndexed(items) { index,videos ->
-                                                if (index > 0 && index % 10 ==0){
-                                                    VideoItemCard(videos, canFavourite = canFavourite)
-                                                }
-                                                VideoItemCard(videos, canFavourite = canFavourite)
-                                            }
-                                        }
-                                    }
-                                }
-
+                                HomeVideosWithAds(
+                                    videos = youtube.items ?: emptyList(),
+                                    columns = if (columns > 1) GridCells.Fixed(columns) else GridCells.Adaptive(300.dp),
+                                    state = lazyListState,
+                                    canFavourite = canFavourite,
+                                    useGridCards = columns > 1
+                                )
                             }
                         }
                     } ?: run {
-                        LazyVerticalGrid(contentPadding = PaddingValues(bottom = LocalBottomBarPadding.current), 
-                            modifier = Modifier.fillMaxSize(),
+                        HomeVideosWithAds(
+                            videos = youtube.items ?: emptyList(),
+                            columns = GridCells.Adaptive(300.dp),
                             state = lazyListState,
-                            columns = GridCells.Adaptive(300.dp)
-                        ) {
-                            youtube.items?.let { items ->
-                                items(items) { videos ->
-                                    VideoItemCard(videos)
-                                }
-                            }
-                        }
+                            canFavourite = false,
+                            useGridCards = false
+                        )
                     }
 
                     Column(
