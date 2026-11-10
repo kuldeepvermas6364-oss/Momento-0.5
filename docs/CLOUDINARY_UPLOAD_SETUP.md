@@ -9,8 +9,11 @@ Cloudinary cloud name: `qrant8fw`
 - This endpoint signs image and video uploads only.
 
 ## 1. Create the Cloudflare Worker
-Create a Worker named `momento-cloudinary-sign` and deploy the source in:
-`cloudflare/worker/src/index.js`
+Worker `momento-cloudinary-sign` has already been deployed to your connected Cloudflare account.
+
+**Worker URL:** `https://momento-cloudinary-sign.kuldeepvermas6364.workers.dev`
+
+Source is maintained in `cloudflare/worker/src/index.js`.
 
 Set these Worker secrets/variables in Cloudflare:
 - `CLOUDINARY_CLOUD_NAME` = `qrant8fw` (Worker variable)
