@@ -21,7 +21,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getVideoList(userRegion: String): Youtube {
-        val url = "videos?part=snippet,contentDetails,statistics,liveStreamingDetails,player,recordingDetails,id&chart=mostPopular&regionCode=${userRegion}&maxResults=2000&key=${API_KEY}"
+        val url = "videos?part=snippet,contentDetails,statistics,liveStreamingDetails,player,recordingDetails,id&chart=mostPopular&regionCode=${userRegion}&maxResults=50&key=${API_KEY}"
         return client.get(url).body()
     }
 
@@ -45,7 +45,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getRelevanceVideos(): Youtube {
-        val url ="search?part=snippet&order=date&type=video&videoEmbeddable=true&maxResults=200&key=$API_KEY&regionCode=us"
+        val url ="search?part=snippet&order=date&type=video&videoEmbeddable=true&maxResults=50&key=$API_KEY&regionCode=us"
         return client.get(url).body()
     }
 
@@ -65,27 +65,27 @@ class YoutubeClientApi(
     }
 
     suspend fun getChannelLiveStreams(channelID: String): Search {
-        val url ="search?part=snippet&eventType=live&type=video&id=${channelID}&maxResults=500&regionCode=us&key=${API_KEY}"
+        val url ="search?part=snippet&eventType=live&type=video&channelId=${channelID}&maxResults=50&regionCode=us&key=${API_KEY}"
         return client.get(url).body()
     }
 
     suspend fun getChannelVideos(playlistID: String): Youtube {
-        val url ="playlistItems?part=snippet,contentDetails,id,status&&maxResults=50&playlistId=${playlistID}&key=$API_KEY"
+        val url ="playlistItems?part=snippet,contentDetails,id,status&maxResults=50&playlistId=${playlistID}&key=$API_KEY"
         return client.get(url).body()
     }
 
     suspend fun getOwnChannelVideos(channelId: String): Search {
-        val url ="search?key=${API_KEY}&part=snippet&channelId=${channelId}&type=video&maxResults=500"
+        val url ="search?key=${API_KEY}&part=snippet&channelId=${channelId}&type=video&maxResults=50"
         return client.get(url).body()
     }
 
     suspend fun getChannelCommunity(channelId: String): Youtube {
-        val url ="activities?part=snippet,contentDetails&channelId=${channelId}&maxResults=500&key=${API_KEY}"
+        val url ="activities?part=snippet,contentDetails&channelId=${channelId}&maxResults=50&key=${API_KEY}"
         return client.get(url).body()
     }
 
     suspend fun getComments(videoId: String, order: String): Comments {
-        val url ="commentThreads?part=snippet,replies&videoId=${videoId}&order=${order}&maxResults=2000&key=${API_KEY}"
+        val url ="commentThreads?part=snippet,replies&videoId=${videoId}&order=${order}&maxResults=100&key=${API_KEY}"
         return client.get(url).body()
     }
 
