@@ -107,6 +107,7 @@ kotlin {
             implementation(libs.androidx.activityCompose)
             implementation(libs.compose.uitooling)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.kotlinx.coroutines.play.services)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.androidx.media3.exoplayer)
             implementation(libs.androidx.media3.exoplayer.dash)
