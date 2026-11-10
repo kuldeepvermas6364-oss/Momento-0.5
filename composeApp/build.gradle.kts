@@ -11,6 +11,10 @@ plugins {
     alias(libs.plugins.libres)
     id("com.google.gms.google-services")
 }
+compose.resources {
+    packageOfResClass = "org.company.app.generated.resources"
+}
+
 kotlin {
     androidTarget {
         compilations.all {
