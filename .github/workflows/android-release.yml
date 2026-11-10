@@ -15,7 +15,7 @@ on:
       - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release-apk:
@@ -100,3 +100,18 @@ jobs:
           path: release-output/*
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish APK to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('v0.5.0-build-{0}', github.run_number) }}
+          target_commitish: ${{ github.sha }}
+          name: Momento 0.5 Android Build #${{ github.run_number }}
+          body: |
+            Signed Momento 0.5 Android APK.
+            Package: com.kuldeep.momento
+          files: |
+            release-output/Momento-0.5-release.apk
+            release-output/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+          make_latest: true
