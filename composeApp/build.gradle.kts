@@ -76,6 +76,7 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.alert.kmp)
             implementation(libs.mediaplayer.kmp)
+            implementation(libs.gitlive.firebase.auth)
             implementation(libs.gitlive.firebase.firestore)
             implementation(libs.gitlive.firebase.database)
             //implementation(libs.gitlive.firebase.analytics)
