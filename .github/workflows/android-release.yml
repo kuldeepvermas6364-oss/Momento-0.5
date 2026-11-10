@@ -9,6 +9,8 @@ on:
         type: string
         default: "Momento Android release build"
   push:
+    branches:
+      - master
     tags:
       - "v*"
 
