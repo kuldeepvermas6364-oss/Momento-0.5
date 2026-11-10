@@ -114,6 +114,7 @@ import org.company.app.presentation.ui.screens.detail.DetailScreen
 import org.company.app.presentation.ui.screens.detail.formatLikes
 import org.company.app.presentation.ui.screens.detail.formatSubscribers
 import org.company.app.presentation.viewmodel.MainViewModel
+import org.company.app.presentation.viewmodel.RemoteSettingsViewModel
 import org.company.app.theme.LocalThemeIsDark
 import org.company.app.core.common.LayoutType
 import org.company.app.core.common.formatVideoDuration
@@ -144,8 +145,20 @@ fun VideosList(
     val lazyListState = rememberLazyGridState()
 
     val layoutInformation by viewModel.layoutInformation.collectAsState()
-    LaunchedEffect(layoutInformation) {
-        println("LayoutInformation in Composable: $layoutInformation")
+    val remoteSettingsViewModel: RemoteSettingsViewModel = koinInject()
+    val remoteSettings by remoteSettingsViewModel.settings.collectAsState()
+    val effectiveLayoutInformation = org.company.app.core.common.LayoutInformation(
+        org.company.app.core.common.LayoutMeta(
+            layoutType = if (remoteSettings.homeLayout.equals("grid", ignoreCase = true)) {
+                LayoutType.Grid(remoteSettings.homeColumns.coerceIn(1, 4))
+            } else {
+                LayoutType.List
+            },
+            favouriteEnabled = layoutInformation?.layoutMeta?.favouriteEnabled ?: false
+        )
+    )
+    LaunchedEffect(layoutInformation, remoteSettings.homeLayout, remoteSettings.homeColumns) {
+        println("Momento remote home layout: ${remoteSettings.homeLayout}, columns: ${remoteSettings.homeColumns}")
     }
     val showButton by remember { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
 
@@ -505,7 +518,7 @@ fun VideosList(
             }
             if (!isAnyCategorySelected) {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    layoutInformation?.let { info ->
+                    effectiveLayoutInformation.let { info ->
                         var canFavourite = info.layoutMeta.favouriteEnabled
                         when (info.layoutMeta.layoutType) {
                             is LayoutType.List -> {
