@@ -9,7 +9,7 @@ data class ContentDetails(
     @SerialName("caption")
     val caption: String? = null,
     @SerialName("contentRating")
-    val contentRating: org.company.app.domain.model.videos.ContentRating?,
+    val contentRating: org.company.app.domain.model.videos.ContentRating? = null,
     @SerialName("definition")
     val definition: String? = null,
     @SerialName("dimension")
@@ -23,5 +23,5 @@ data class ContentDetails(
     @SerialName("itemCount")
     val itemCount: Int? = null,
     @SerialName("regionRestriction")
-    val regionRestriction: org.company.app.domain.model.videos.RegionRestriction?
+    val regionRestriction: org.company.app.domain.model.videos.RegionRestriction? = null
 )
