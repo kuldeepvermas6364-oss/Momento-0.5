@@ -125,12 +125,12 @@ import org.company.app.core.common.formatViewCount
 import org.company.app.core.common.getFormattedDate
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import youtube_clone.composeapp.generated.resources.Res
-import youtube_clone.composeapp.generated.resources.compass_icon
-import youtube_clone.composeapp.generated.resources.livestream_icon
-import youtube_clone.composeapp.generated.resources.trending
-import youtube_clone.composeapp.generated.resources.youtube_logo_dark
-import youtube_clone.composeapp.generated.resources.youtube_logo_light
+import org.company.app.generated.resources.Res
+import org.company.app.generated.resources.compass_icon
+import org.company.app.generated.resources.livestream_icon
+import org.company.app.generated.resources.trending
+import org.company.app.generated.resources.youtube_logo_dark
+import org.company.app.generated.resources.youtube_logo_light
 import org.company.app.domain.model.videos.Item as VideoItem
 import org.company.app.presentation.ui.screens.detail.formatViewCount as FormateView
 
