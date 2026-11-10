@@ -50,7 +50,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getSearch(query: String, userRegion: String): Search {
-        val url ="search?part=snippet&q=${query}&type=any&maxResults=200&key=$API_KEY&regionCode=${userRegion}"
+        val url ="search?part=snippet&q=${query}&type=video&maxResults=50&key=$API_KEY&regionCode=${userRegion}"
         return client.get(url).body()
     }
 
@@ -90,7 +90,7 @@ class YoutubeClientApi(
     }
 
     suspend fun getVideoCategories(): VideoCategories {
-        val url ="videoCategories?key=${API_KEY}&part=snippet&maxResults=250&regionCode=us"
+        val url ="videoCategories?key=${API_KEY}&part=snippet&maxResults=50&regionCode=us"
         return client.get(url).body()
     }
 
