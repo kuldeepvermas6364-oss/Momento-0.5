@@ -176,27 +176,27 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.company.app.desktopApp"
+            packageName = "Momento"
             packageVersion = "1.0.0"
-            description = "YouTube Clone Using Kotlin Multiplatform"
+            description = "Momento social video and community app"
             copyright = "© 2024 Muhammad Khubaib Imtiaz. All rights reserved."
             licenseFile.set(rootProject.file("LICENSE"))
 
             val iconPath = "composeApp/src/commonMain/composeResources/drawable/youtube_music.png"
 
             windows {
-                packageName = "org.company.app.desktopApp.windows"
+                packageName = "Momento"
                 packageVersion = "1.0.0"
                 iconFile.set(project.file("window_icon.ico"))
 
             }
             macOS {
-                packageName = "org.company.app.desktopApp.macos"
+                packageName = "Momento"
                 packageVersion = "1.0.0"
                 iconFile.set(File("src/commonMain/composeResources/drawable/macos_icon.icns"))
             }
             linux {
-                packageName = "org.company.app.desktopApp.linux"
+                packageName = "Momento"
                 packageVersion = "1.0.0"
                 iconFile.set(File("composeApp/src/commonMain/composeResources/drawable/youtube_music.png"))
             }
