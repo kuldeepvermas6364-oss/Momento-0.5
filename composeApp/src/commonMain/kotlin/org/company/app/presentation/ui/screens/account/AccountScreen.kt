@@ -55,10 +55,10 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.company.app.theme.LocalThemeIsDark
 import org.jetbrains.compose.resources.painterResource
-import youtube_clone.composeapp.generated.resources.Res
-import youtube_clone.composeapp.generated.resources.do_more_with_youtube
-import youtube_clone.composeapp.generated.resources.youtube_kids
-import youtube_clone.composeapp.generated.resources.youtube_music
+import org.company.app.generated.resources.Res
+import org.company.app.generated.resources.do_more_with_youtube
+import org.company.app.generated.resources.youtube_kids
+import org.company.app.generated.resources.youtube_music
 
 object AccountScreen : Tab {
     @Composable
