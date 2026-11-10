@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="88dp"/>
+            <gradient android:angle="315" android:startColor="#090B27" android:centerColor="#17104A" android:endColor="#071D45"/>
+            <stroke android:width="5dp" android:color="#A72CFF"/>
+        </shape>
+    </item>
+    <item android:drawable="@drawable/momento_foreground" android:gravity="center" android:width="300dp" android:height="300dp"/>
+</layer-list>
