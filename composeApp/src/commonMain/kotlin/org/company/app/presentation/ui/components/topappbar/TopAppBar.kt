@@ -97,9 +97,9 @@ import org.company.app.core.common.formatViewCount
 import org.company.app.core.common.getFormattedDateHome
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import youtube_clone.composeapp.generated.resources.Res
-import youtube_clone.composeapp.generated.resources.youtube_logo_icon_dark
-import youtube_clone.composeapp.generated.resources.youtube_logo_icon_light
+import org.company.app.generated.resources.Res
+import org.company.app.generated.resources.youtube_logo_icon_dark
+import org.company.app.generated.resources.youtube_logo_icon_light
 import org.company.app.domain.model.channel.Item as ChannelItem
 import org.company.app.domain.model.videos.Item as YouTubeItem
 
