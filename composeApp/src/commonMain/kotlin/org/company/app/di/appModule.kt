@@ -5,6 +5,8 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.database.database
 import dev.gitlive.firebase.auth.auth
 import org.company.app.data.repository.FirebaseAuthRepository
+import org.company.app.data.repository.RemoteSettingsRepository
+import org.company.app.presentation.viewmodel.RemoteSettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -63,6 +65,8 @@ val appModule = module {
     single { Firebase.database }
     single { Firebase.auth }
     singleOf(::FirebaseAuthRepository)
+    singleOf(::RemoteSettingsRepository)
+    viewModelOf(::RemoteSettingsViewModel)
     singleOf(::YouTubeServiceImpl)
     single { YoutubeDatabase(DriverFactory().createDriver()) }
     viewModelOf(::MainViewModel)
