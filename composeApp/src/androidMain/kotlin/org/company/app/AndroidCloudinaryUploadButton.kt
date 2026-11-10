@@ -108,7 +108,7 @@ internal fun AndroidCloudinaryUploadButton(modifier: Modifier = Modifier) {
             title = { Text("Upload to Momento") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Choose a photo or video. Your upload is stored in your private Momento media folder.")
+                    Text("Choose a photo or video. Your upload is stored in your Momento media folder.")
                     OutlinedButton(
                         onClick = {
                             showPickerOptions = false
