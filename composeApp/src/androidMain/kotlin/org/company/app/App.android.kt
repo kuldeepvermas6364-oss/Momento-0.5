@@ -3,12 +3,10 @@ package org.company.app
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
@@ -17,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.google.firebase.FirebaseApp
@@ -61,43 +57,6 @@ class AppActivity : ComponentActivity() {
             Box(Modifier.fillMaxSize()) {
                 App()
                 AndroidCloudinaryUploadButton(Modifier.align(Alignment.BottomEnd))
-            }
-            checkAndRequestPermissions()
-        }
-    }
-
-    private fun checkAndRequestPermissions() {
-        val permissions = arrayOf(
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-
-        val permissionsToRequest = permissions.filter {
-            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
-        }
-
-        if (permissionsToRequest.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                permissionsToRequest.toTypedArray(),
-                PERMISSION_REQUEST_CODE
-            )
-        } else {
-            proceedWithTask()
-        }
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                proceedWithTask()
-            } else {
-                Toast.makeText(this, "Permissions are required to proceed.", Toast.LENGTH_SHORT)
-                    .show()
             }
         }
     }
