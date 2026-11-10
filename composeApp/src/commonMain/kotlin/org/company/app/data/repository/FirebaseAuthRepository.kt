@@ -29,7 +29,7 @@ class FirebaseAuthRepository(
 
     suspend fun ensureUserProfile() {
         val user = auth.currentUser ?: return
-        val updates = mutableMapOf<String, Any?>(
+        val updates = mapOf(
             "users/${user.uid}/uid" to user.uid,
             "users/${user.uid}/email" to user.email,
             "users/${user.uid}/displayName" to user.displayName,
@@ -42,11 +42,6 @@ class FirebaseAuthRepository(
             "profiles/${user.uid}/photoUrl" to user.photoURL,
             "profiles/${user.uid}/updatedAt" to mapOf(".sv" to "timestamp")
         )
-        val userRef = database.reference().child("users").child(user.uid)
-        if (!userRef.get().exists) {
-            updates["users/${user.uid}/createdAt"] = mapOf(".sv" to "timestamp")
-            updates["profiles/${user.uid}/createdAt"] = mapOf(".sv" to "timestamp")
-        }
         database.reference().updateChildren(updates)
     }
 
