@@ -10,9 +10,9 @@ import dev.gitlive.firebase.FirebaseOptions
 import dev.gitlive.firebase.initialize
 import org.company.app.App
 import org.jetbrains.compose.resources.painterResource
-import youtube_clone.composeapp.generated.resources.Res
-import youtube_clone.composeapp.generated.resources.youtube_color_icon
-import youtube_clone.composeapp.generated.resources.youtube_music
+import org.company.app.generated.resources.Res
+import org.company.app.generated.resources.youtube_color_icon
+import org.company.app.generated.resources.youtube_music
 import java.awt.Dimension
 
 fun main() = application {
