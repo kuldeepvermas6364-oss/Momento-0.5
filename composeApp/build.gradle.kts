@@ -147,7 +147,7 @@ android {
         minSdk = 28
         targetSdk = 35
 
-        applicationId = "org.company.app.androidApp"
+        applicationId = "com.kuldeep.momento"
         versionCode = 1
         versionName = "1.0.0"
     }
