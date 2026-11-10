@@ -11,7 +11,7 @@ data class Thumbnails(
     @SerialName("high")
     val high: org.company.app.domain.model.videos.High? = null,
     @SerialName("maxres")
-    val maxres: org.company.app.domain.model.videos.Maxres?,
+    val maxres: org.company.app.domain.model.videos.Maxres? = null,
     @SerialName("medium")
     val medium: org.company.app.domain.model.videos.Medium,
     @SerialName("standard")
