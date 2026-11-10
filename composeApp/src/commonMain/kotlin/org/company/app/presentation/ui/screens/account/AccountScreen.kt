@@ -5,6 +5,7 @@ import org.company.app.data.repository.FirebaseAuthRepository
 import org.koin.compose.koinInject
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,6 +66,11 @@ object AccountScreen : Tab {
         val authRepository: FirebaseAuthRepository = koinInject()
         val signedInUser by authRepository.authStateChanged.collectAsState(initial = authRepository.currentUser)
         val scope = rememberCoroutineScope()
+        LaunchedEffect(signedInUser?.uid) {
+            if (signedInUser != null) {
+                runCatching { authRepository.ensureUserProfile() }
+            }
+        }
         var showSignIn by remember { mutableStateOf(false) }
         if (showSignIn) SignInNotice(onDismiss = { showSignIn = false })
         val navigator = LocalNavigator.current
