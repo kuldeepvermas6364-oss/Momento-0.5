@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.company.app.data.repository.FirebaseAuthRepository
@@ -56,6 +57,7 @@ fun SignInNotice(onDismiss: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Password") },
                     singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
                     enabled = !busy
                 )
                 message?.let {
